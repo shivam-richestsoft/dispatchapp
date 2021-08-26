@@ -50,7 +50,7 @@ class AdminController extends Controller
             }
             $credentials = $request->only('email', 'password');
             $remember = true;
-            $check = Admin::where('email', $request->email)->where('role', 0)->first();
+            $check = User::where('email', $request->email)->where('role_id', 0)->first();
             if ($check) {
                 if (Auth::attempt($credentials, $remember)) {
                     Auth::logoutOtherDevices($request->password);
@@ -64,39 +64,6 @@ class AdminController extends Controller
             }
         } else {
             return view('admin.login');
-        }
-    }
-    public function AgencyLogin(Request $request)
-    {
-        if ($request->isMethod('post')) {
-            $validator = validator()->make($request->all(), [
-                "email" => "required|email",
-                "password" => "required",
-            ]);
-            if ($validator->fails()) {
-                return back()->withInput($request->input())->with($validator->errors());
-            }
-            $credentials = $request->only('email', 'password');
-            $remember = true;
-            $check = Admin::where('email', $request->email)->where('role', 2)->first();
-            if ($check) {
-                $checkblock = Admin::where('email', $request->email)->where('role', 2)->where('status', 1)->first();
-                if ($checkblock) {
-                    if (Auth::attempt($credentials, $remember)) {
-                        Auth::logoutOtherDevices($request->password);
-                        //   $request->session()->regenerate();
-                        return redirect("admin/home");
-                    } else {
-                        return back()->with('error', "Incorrect email/password.");
-                    }
-                } else {
-                    return back()->with('error', "Your account has been blocked.Please contact support.");
-                }
-            } else {
-                return back()->with('error', "Incorrect email/password.");
-            }
-        } else {
-            return view('admin.agencylogin');
         }
     }
     public function Logout()

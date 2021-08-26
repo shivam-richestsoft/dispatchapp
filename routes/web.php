@@ -15,7 +15,8 @@ use App\Models\Admin;
 
 
 Route::get('/', [AdminController::class,'Login']);
-Route::post('/login',[AdminController::class,'Login']);
+//Route::get('/login', [ 'as' => 'login', 'uses' => 'AdminController@login']);
+
 Route::get('/agency',[AdminController::class,'AgencyLogin']);
 Route::post('/agency',[AdminController::class,'AgencyLogin']);
 Route::group(['prefix'=>'admin'], function() {

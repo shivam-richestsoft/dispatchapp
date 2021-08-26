@@ -30,6 +30,7 @@ Route::post('change-password',[UserController::class, 'changePassword']);
 Route::get('login-check',[UserController::class, 'loginCheck'])->name('login-check');
 
 Route::middleware('auth:sanctum')->group( function () {
+    Route::post('hii',[UserController::class, 'forgotPassword']);
 
 //invite    
 // Route::post('invite',[UC::class, 'invite']);

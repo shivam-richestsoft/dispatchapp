@@ -141,8 +141,14 @@ class UserController extends Controller
                 'email' => 'required',
                 'password' => 'required',
             ]);
-            if (Auth::attempt($login)) {
+            $credentials = $r->only('email', 'password');
+            $remember = false;
+            if (Auth::attempt($credentials,$remember)) {
                 $user = auth()->user();
+
+                $token = $user->createToken('API Token')->plainTextToken;
+                print_r($token);
+                die('in');
                 $first_time_login = false;
                 if (auth()->user()->first_time_login == self::FIRST_LOGIN_FALSE) {
                     $first_time_login = true;
