@@ -27,10 +27,9 @@ Route::post('forgot-password',[UserController::class, 'forgotPassword']);
 Route::post('change-password',[UserController::class, 'changePassword']);
 
 //to show error when user not logged in --- used in middleware(Authenticate)
-Route::get('login-check',[UserController::class, 'loginCheck'])->name('login-check');
+Route::get('login-check',[UserController::class, 'loginCheck'])->name('login');
 
 Route::middleware('auth:sanctum')->group( function () {
-    Route::post('hii',[UserController::class, 'forgotPassword']);
 
 //invite    
 // Route::post('invite',[UC::class, 'invite']);

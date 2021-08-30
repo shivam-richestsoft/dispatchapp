@@ -94,7 +94,7 @@ class UserController extends Controller
     {
         try {
             auth()->user()->tokens()->delete();
-            return $this->success(true, 'Successfully loggged out all devices');
+            return $this->success(true, 'Successfully loggged out from all devices');
         } catch (\Exception $e) {
             return $this->error('Please check your fields');
         }
@@ -146,14 +146,14 @@ class UserController extends Controller
             if (Auth::attempt($credentials,$remember)) {
                 $user = auth()->user();
 
-                $token = $user->createToken('API Token')->plainTextToken;
-                print_r($token);
-                die('in');
-                $first_time_login = false;
-                if (auth()->user()->first_time_login == self::FIRST_LOGIN_FALSE) {
-                    $first_time_login = true;
-                    $user->update(['first_time_login' => self::FIRST_LOGIN_TRUE]);
-                }
+              //  $token = $user->createToken('API Token')->plainTextToken;
+               // print_r($token);
+               // die('in');
+               // $first_time_login = false;
+                // if (auth()->user()->first_time_login == self::FIRST_LOGIN_FALSE) {
+                //     $first_time_login = true;
+                //     $user->update(['first_time_login' => self::FIRST_LOGIN_TRUE]);
+                // }
                 $token = $user->createToken('API Token')->plainTextToken;
                 $profileDetails['is_business'] = $business_status ?? false;
                 $profileDetails['is_individual'] = $user_status ?? false;
@@ -162,7 +162,7 @@ class UserController extends Controller
                 $user->is_business == 1 ? $business_status = true : $user_status = true;
                 $list = [];
                 $list['token'] =  $token;
-                $list['first_time_login'] =  $first_time_login;
+              //  $list['first_time_login'] =  $first_time_login;
                 $list['name'] =  $user->name;
                 $list['profile_image'] =  $user->profile_image;
                 $list['is_business'] = $business_status ?? false;

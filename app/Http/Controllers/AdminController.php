@@ -335,11 +335,13 @@ class AdminController extends Controller
 
     public function home()
     {
-        $staff = Admin::all();
+        $staff = User::all();
         $data = [];
         $data['steamer'] = User::where('role_id', 2)->count();
-        $data['staff'] = Admin::where('role', 1)->count();
-        $data['agency'] = Admin::where('role', 2)->count();
+        // $data['staff'] = Admin::where('role', 1)->count();
+        // $data['agency'] = Admin::where('role', 2)->count();
+        $data['staff'] = 0;
+        $data['agency'] = 0;
         $data['permission'] = PD::count();
         return view('admin.home', compact('staff', 'data'));
     }
