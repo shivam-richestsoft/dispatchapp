@@ -19,9 +19,9 @@ trait ApiResponser
         return response()->json($response, $status, $headers = [], $options = JSON_PRETTY_PRINT);
 	}
 
-    protected function successWithData($data = [], string $message = 'Data fetched', $success = true, int $status = 200)
+    protected function successWithData($data = [],$options=[], string $message = 'Data fetched',int $status = 200)
 	{
-        $response = ["status" =>  $status, "success" => $success, "message" => $message,'data'=>$data];
+        $response = ["status" =>  $status,  "message" => $message,'data'=>array_merge($data,$options)];
         return response()->json($response, $status, $headers = [], $options = JSON_PRETTY_PRINT);
 	}
 
@@ -36,9 +36,9 @@ trait ApiResponser
                 foreach ( $v->messages ()
                     ->all () as $error_message ) {
                     $error_description .= $error_message . " ";
-
-					return $this->error($error_description);
 	}
+    return $this->error($error_description);
+
 	
 	}
     protected function withsuccess($data = [],int $count=0, string $message = 'Data fetched', $success = true, int $status = 200)

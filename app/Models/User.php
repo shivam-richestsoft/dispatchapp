@@ -53,4 +53,16 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+
+    public function jsonData(){
+        $json=[];
+        $json['id']=$this->id;
+        $json['name']=$this->name;
+        $json['email']=$this->email;
+        $json['phone']=$this->phone;
+        $json['is_notification']=$this->is_notification;
+        return $json;
+
+    }
 }

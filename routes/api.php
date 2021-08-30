@@ -23,19 +23,21 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('register',[UserController::class, 'register']);
 Route::post('login',[UserController::class, 'login']);
+
+Route::post('send-otp',[UserController::class, 'sendOtp']);
 Route::post('forgot-password',[UserController::class, 'forgotPassword']);
-Route::post('change-password',[UserController::class, 'changePassword']);
 
 //to show error when user not logged in --- used in middleware(Authenticate)
 Route::get('login-check',[UserController::class, 'loginCheck'])->name('login');
 
 Route::middleware('auth:sanctum')->group( function () {
+    Route::post('change-password',[UserController::class, 'changePassword']);
 
 //invite    
 // Route::post('invite',[UC::class, 'invite']);
 
 // //general
-// Route::get('get-profile',[UC::class, 'getProfile']);
+ Route::get('get-profile',[UserController::class, 'getProfile']);
 // Route::post('update-profile',[UC::class, 'updateProfile']);
 // Route::post('additional-info',[UC::class, 'additionalInfo']);
 

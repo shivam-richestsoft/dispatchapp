@@ -61,7 +61,8 @@ use App\Http\Requests\UserRequest;
 
 //events
 use App\Events\Notify;
-
+use App\Models\Otp;
+use Exception;
 
 class UserController extends Controller
 {
@@ -76,7 +77,7 @@ class UserController extends Controller
         try {
             return $this->success(false, 'Please login to access this page', 403);
         } catch (\Exception $e) {
-            return $this->error('Please check your fields');
+            return $this->error($e->getMessage());
         }
     }
     //logout current device    
@@ -133,44 +134,35 @@ class UserController extends Controller
             return $this->error('Please check your fields');
         }
     }
-    //login for both
+    //login 
     public function login(request $r)
     {
         try {
-            $login = $r->validate([
-                'email' => 'required',
-                'password' => 'required',
-            ]);
-            $credentials = $r->only('email', 'password');
-            $remember = false;
-            if (Auth::attempt($credentials,$remember)) {
-                $user = auth()->user();
-
-              //  $token = $user->createToken('API Token')->plainTextToken;
-               // print_r($token);
-               // die('in');
-               // $first_time_login = false;
-                // if (auth()->user()->first_time_login == self::FIRST_LOGIN_FALSE) {
-                //     $first_time_login = true;
-                //     $user->update(['first_time_login' => self::FIRST_LOGIN_TRUE]);
-                // }
-                $token = $user->createToken('API Token')->plainTextToken;
-                $profileDetails['is_business'] = $business_status ?? false;
-                $profileDetails['is_individual'] = $user_status ?? false;
-                $business_status = false;
-                $user_status = false;
-                $user->is_business == 1 ? $business_status = true : $user_status = true;
-                $list = [];
-                $list['token'] =  $token;
-              //  $list['first_time_login'] =  $first_time_login;
-                $list['name'] =  $user->name;
-                $list['profile_image'] =  $user->profile_image;
-                $list['is_business'] = $business_status ?? false;
-                $list['is_individual'] = $user_status ?? false;
-                return $this->successWithData($list);
-            } else {
-                return $this->error('Invalid credentials');
+            $v = Validator::make(
+                $r->input(),
+                [
+                    'phone' => 'required',
+                    'password' => 'required',
+                ]
+            );
+            if ($v->fails()) {
+                return $this->validation($v);
             }
+
+            $user = User::where('phone', '=', $r->phone)->first();
+            if (!$user) {
+                throw new Exception("Invalid phone or password");
+            }
+            if (!Hash::check($r->password, $user->password)) {
+                throw new Exception("Invalid phone or password");
+            }
+            //Genrate API Auth token
+            $token = $user->createToken('API Token')->plainTextToken;
+
+            $data = [];
+            $data['token'] =  $token;
+            $data['user_data'] =  $user->jsonData($token);
+            return $this->successWithData($data);
         } catch (\Throwable $e) {
             return $this->error($e->getMessage());
         }
@@ -178,46 +170,54 @@ class UserController extends Controller
     //get all profile including additional info of both users
     public function getProfile(request $r)
     {
-
-        $profileDetails = [];
-        $languages = [];
-        $skills = [];
-        try {
-            $data = User::profileResponse(auth()->user()->id);
-            if (!empty($data)) {
-                return $this->successWithData($data);
-            } else {
-                return $this->success(false);
-            }
-        } catch (\Throwable $e) {
-            return $this->error($e->getMessage());
-        }
+        return $this->successWithData(auth()->user()->jsonData());
     }
 
-    // forget password 
-    public function forgotPassword(request $r)
+    //sendOtp  
+    public function sendOtp(request $r)
     {
         $v = Validator::make(
             $r->input(),
             [
-                'email' => 'required|email|max:255',
+                'phone' => 'required',
             ]
         );
         if ($v->fails()) {
             return $this->validation($v);
         }
         try {
-            $user = User::where('email', $r->email)->first();
+            DB::beginTransaction();
+
+            $user = User::where('phone', $r->phone)->first();
             if (!empty($user)) {
-                $token = Str::random(20);
-                $updated = PasswordReset::updateOrCreate(['email' => $r->email], ['email' => $r->email, 'token' => $token]);
-                if ($this->sendResetEmail($user, $token)) {
-                    return $this->success(true, 'Password reset link has been sent to your registered email id.');
-                } else {
-                    return $this->success(false);
+               // $otp = Str::random(4);
+               $otp = 1234;;
+
+                Otp::where('phone', $r->phone)
+                    ->delete();
+
+                $otpModel = new Otp();
+                $otpModel->phone = $user->phone;
+                $otpModel->otp = $otp;
+                $otpModel->created_by_id = $user->id;
+                if (!$otpModel->save()) {
+                    throw new Exception("Invalid phone or password");
                 }
+
+                DB::commit();
+
+                return $this->success(true, 'OTP has been sent to your registered phone number.');
+
+                //For email case
+                // $updated = PasswordReset::updateOrCreate(['email' => $r->email], ['email' => $r->email, 'token' => $token]);
+                // if ($this->sendResetEmail($user, $token)) {
+                //     return $this->success(true, 'Password reset link has been sent to your registered email id.');
+                // } else {
+                //     return $this->success(false);
+                // }
             } else {
-                return $this->success(false, 'This email is not registered yet');
+                DB::rollBack();
+                return $this->success(false, 'This number is not registered yet');
             }
         } catch (\Throwable $e) {
             return $this->error($e->getMessage());
@@ -229,7 +229,6 @@ class UserController extends Controller
         $v = Validator::make(
             $r->input(),
             [
-                'token' => 'required',
                 'password' => 'required',
             ]
         );
