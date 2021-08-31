@@ -13,13 +13,13 @@ namespace App\Traits;
 
 trait ApiResponser
 {
-	protected function success($success = true,string $message = 'Oops! something went wrong' , int $status = 200)
+	protected function success(string $message = 'Oops! something went wrong' , int $status = 200)
 	{
         $response = ["status" =>  $status, "message" => $message];
         return response()->json($response, $status, $headers = [], $options = JSON_PRETTY_PRINT);
 	}
 
-    protected function successWithData($data = [],$options=[], string $message = 'Data fetched',int $status = 200)
+    protected function successWithData($data = [], string $message = 'Data fetched',$options=[],int $status = 200)
 	{
         $response = ["status" =>  $status,  "message" => $message,'data'=>array_merge($data,$options)];
         return response()->json($response, $status, $headers = [], $options = JSON_PRETTY_PRINT);

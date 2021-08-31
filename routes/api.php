@@ -27,6 +27,9 @@ Route::post('login',[UserController::class, 'login']);
 Route::post('send-otp',[UserController::class, 'sendOtp']);
 Route::post('forgot-password',[UserController::class, 'forgotPassword']);
 
+Route::post('verify-otp',[UserController::class, 'verifyOtp']);
+
+
 //to show error when user not logged in --- used in middleware(Authenticate)
 Route::get('login-check',[UserController::class, 'loginCheck'])->name('login');
 

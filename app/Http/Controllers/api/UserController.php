@@ -75,7 +75,7 @@ class UserController extends Controller
     public function loginCheck(request $r)
     {
         try {
-            return $this->success(false, 'Please login to access this page', 403);
+            return $this->success('Please login to access this page', 403);
         } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
@@ -85,7 +85,7 @@ class UserController extends Controller
     {
         try {
             $r->user()->currentAccessToken()->delete();
-            return $this->success(true, 'Successfully loggged out');
+            return $this->success('Successfully loggged out');
         } catch (\Exception $e) {
             return $this->error('Please check your fields');
         }
@@ -95,7 +95,7 @@ class UserController extends Controller
     {
         try {
             auth()->user()->tokens()->delete();
-            return $this->success(true, 'Successfully loggged out from all devices');
+            return $this->success('Successfully loggged out from all devices');
         } catch (\Exception $e) {
             return $this->error('Please check your fields');
         }
@@ -113,7 +113,7 @@ class UserController extends Controller
                     'password' => Hash::make($r->password)
                 ]
             );
-            return $this->success(true, 'Registration successful');
+            return $this->success('Registration successful');
         } catch (\Throwable $e) {
             return $this->error($e->getMessage());
         }
@@ -129,7 +129,7 @@ class UserController extends Controller
                     'name' => $r->name, 'email' => $r->email,
                     'phone' => $r->phone, 'business_name' => $r->business_name
                 ]);
-            return $this->success(true, 'Profile updated successfully');
+            return $this->success('Profile updated successfully');
         } catch (\Throwable $e) {
             return $this->error('Please check your fields');
         }
@@ -162,7 +162,7 @@ class UserController extends Controller
             $data = [];
             $data['token'] =  $token;
             $data['user_data'] =  $user->jsonData($token);
-            return $this->successWithData($data);
+            return $this->successWithData($data, "Login successfull");
         } catch (\Throwable $e) {
             return $this->error($e->getMessage());
         }
@@ -189,36 +189,112 @@ class UserController extends Controller
             DB::beginTransaction();
 
             $user = User::where('phone', $r->phone)->first();
-            if (!empty($user)) {
-               // $otp = Str::random(4);
-               $otp = 1234;;
-
-                Otp::where('phone', $r->phone)
-                    ->delete();
-
-                $otpModel = new Otp();
-                $otpModel->phone = $user->phone;
-                $otpModel->otp = $otp;
-                $otpModel->created_by_id = $user->id;
-                if (!$otpModel->save()) {
-                    throw new Exception("Invalid phone or password");
-                }
-
-                DB::commit();
-
-                return $this->success(true, 'OTP has been sent to your registered phone number.');
-
-                //For email case
-                // $updated = PasswordReset::updateOrCreate(['email' => $r->email], ['email' => $r->email, 'token' => $token]);
-                // if ($this->sendResetEmail($user, $token)) {
-                //     return $this->success(true, 'Password reset link has been sent to your registered email id.');
-                // } else {
-                //     return $this->success(false);
-                // }
-            } else {
-                DB::rollBack();
-                return $this->success(false, 'This number is not registered yet');
+            if (empty($user)) {
+                throw new Exception("This number is not registered yet");
             }
+            // $otp = Str::random(4);
+            $otp = 1234;;
+
+            Otp::where('phone', $r->phone)
+                ->delete();
+
+            $otpModel = new Otp();
+            $otpModel->phone = $user->phone;
+            $otpModel->otp = $otp;
+            $otpModel->created_by_id = $user->id;
+            if (!$otpModel->save()) {
+                throw new Exception("Invalid phone or password");
+            }
+
+            DB::commit();
+
+            return $this->success('OTP has been sent to your registered phone number.');
+
+            //For email case
+            // $updated = PasswordReset::updateOrCreate(['email' => $r->email], ['email' => $r->email, 'token' => $token]);
+            // if ($this->sendResetEmail($user, $token)) {
+            //     return $this->success(true, 'Password reset link has been sent to your registered email id.');
+            // } else {
+            //     return $this->success(false);
+            // }
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return $this->error($e->getMessage());
+        }
+    }
+
+     //verifyOtp  
+     public function verifyOtp(request $r)
+     {
+         $v = Validator::make(
+             $r->input(),
+             [
+                 'phone' => 'required',
+                 'otp' => 'required'
+ 
+             ]
+         );
+         if ($v->fails()) {
+             return $this->validation($v);
+         }
+         try {
+ 
+             $user = User::where('phone', $r->phone)->first();
+             if (empty($user)) {
+                 throw new Exception("This number is not registered yet");
+             }
+ 
+             $otp = Otp::where(['phone' => $r->phone, 'otp' => $r->otp])
+                 ->first();
+             if (empty($otp)) {
+                 throw new Exception("No otp found");
+             }
+             $otp->delete();
+             return $this->success("OTP verified successfully");
+
+         } catch (\Throwable $e) {
+             return $this->error($e->getMessage());
+         }
+     }
+
+
+
+    //forgotPassword  
+    public function forgotPassword(request $r)
+    {
+        $v = Validator::make(
+            $r->input(),
+            [
+                'phone' => 'required',
+                'otp' => 'required'
+
+            ]
+        );
+        if ($v->fails()) {
+            return $this->validation($v);
+        }
+        try {
+
+            $user = User::where('phone', $r->phone)->first();
+            if (empty($user)) {
+                throw new Exception("This number is not registered yet");
+            }
+
+            $otp = Otp::where(['phone' => $r->phone, 'otp' => $r->otp])
+                ->first();
+            if (empty($otp)) {
+                throw new Exception("No otp found");
+            }
+
+            //Genrate API Auth token
+            $token = $user->createToken('API Token')->plainTextToken;
+            $data = [];
+            $data['token'] =  $token;
+            $data['user_data'] =  $user->jsonData($token);
+
+            $otp->delete();
+            return $this->successWithData($data, "Login successfull");
         } catch (\Throwable $e) {
             return $this->error($e->getMessage());
         }
@@ -235,18 +311,11 @@ class UserController extends Controller
         if ($v->fails()) {
             return $this->validation($v);
         }
-        $token = $r->token;
-        $email = PasswordReset::where('token', $r->token)->pluck('email')->first();
-        if (empty($email)) {
-            return $this->success(false, 'You have not requested for password change');
-        } else {
-            $updated = User::where('email', $email)->update(['password' => md5($r->password)]);
-            if ($updated) {
-                PasswordReset::where('token', $r->token)->delete();
-                return $this->success(true, 'Password changed successfully');
-            } else {
-                return $this->success(false);
-            }
+        try {
+            auth()->user()->update(['password' => Hash::make($r->password)]);
+            return $this->success('Password changed successfull');
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage());
         }
     }
 }
