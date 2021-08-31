@@ -67,10 +67,10 @@ class User extends Authenticatable
         $json = [];
         $json['id'] = $this->id;
         $json['name'] = $this->name;
-      //  $json['email'] = $this->email;
+        //  $json['email'] = $this->email;
         $json['phone'] = $this->phone;
         $json['is_notification'] = $this->is_notification;
-        $json['color_code'] = $this->color_code;
+        $json['color_code'] = $this->color_code ?? '';
         $json['have_app'] = $this->have_app;
 
         return $json;
