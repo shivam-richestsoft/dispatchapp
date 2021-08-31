@@ -342,7 +342,8 @@ class UserController extends Controller
                     'phone' => $r->phone,
                     'color_code' => $r->color_code,
                     'password' => Hash::make($r->password),
-                    'created_by_id' => auth()->user()->id
+                    'created_by_id' => auth()->user()->id,
+                    'role_id' => User::ROLE_DRIVER
                 ]
             );
 
@@ -367,8 +368,8 @@ class UserController extends Controller
                 return $this->validation($v);
             }
 
-            $user = User::where('id',$r->driver_id)->first();
-            if(empty($user)){
+            $user = User::where('id', $r->driver_id)->first();
+            if (empty($user)) {
                 throw new Exception("No driver found");
             }
             $user->update([
@@ -383,4 +384,14 @@ class UserController extends Controller
     }
 
 
+    //get driver list
+    public function driverList(request $r)
+    {
+        try {
+            $paginator = User::where('role_id', User::ROLE_DRIVER)->paginate(20);
+            return $this->customPaginator($paginator);
+        } catch (\Throwable $th) {
+            return $this->error($th->getMessage());
+        }
+    }
 }

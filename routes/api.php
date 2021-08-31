@@ -44,6 +44,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('update-driver-profile', [UserController::class, 'updateDriverProfile']);
 
+    Route::get('driver-list', [UserController::class, 'driverList']);
+
+
 
     // Route::post('additional-info',[UC::class, 'additionalInfo']);
 

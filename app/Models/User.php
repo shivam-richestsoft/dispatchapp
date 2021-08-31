@@ -15,10 +15,12 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     const ROLE_ADMIN = 0;
-    const ROLE_STAFF = 1;
-    const ROLE_AGENCY = 2;
-    const ROLE_STREAMER = 3;
-    const ROLE_USER = 4;
+    // const ROLE_STAFF = 1;
+    // const ROLE_AGENCY = 2;
+    // const ROLE_STREAMER = 3;
+    const ROLE_USER = 1;
+    const ROLE_DRIVER = 2;
+
 
     const MALE = 1;
     const FEMALE = 2;
@@ -65,7 +67,7 @@ class User extends Authenticatable
         $json = [];
         $json['id'] = $this->id;
         $json['name'] = $this->name;
-        $json['email'] = $this->email;
+      //  $json['email'] = $this->email;
         $json['phone'] = $this->phone;
         $json['is_notification'] = $this->is_notification;
         $json['color_code'] = $this->color_code;
