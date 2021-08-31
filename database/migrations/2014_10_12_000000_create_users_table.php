@@ -18,8 +18,8 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('first_name')->nullable();
             $table->string('last_name')->nullable();
-            $table->string('email')->unique();
-            $table->string('phone')->nullable();
+            $table->string('email')->nullable()->unique();
+            $table->string('phone')->unique();
             $table->string('profile_image')->nullable();
             $table->string('cover_image')->nullable();
             $table->string('address')->nullable();
@@ -29,6 +29,8 @@ class CreateUsersTable extends Migration
             $table->string('state')->nullable();
             $table->integer('pincode')->nullable();
             $table->integer('age')->nullable();
+            $table->integer('color_code')->nullable();
+            $table->integer('have_app')->default(0);  
             $table->integer('role_id')->default(0);  
 			$table->integer('is_notification')->default(1);
             $table->integer('status')->default(1);

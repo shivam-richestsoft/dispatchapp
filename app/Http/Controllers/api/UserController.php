@@ -120,18 +120,18 @@ class UserController extends Controller
     }
 
     //update profile for both users
-    public function updateProfile(UserRequest $r)
+    public function updateProfile(request $r)
     {
         try {
-            $user = Auth::user();
-            $update = User::where('id', $user->id)
-                ->update([
-                    'name' => $r->name, 'email' => $r->email,
-                    'phone' => $r->phone, 'business_name' => $r->business_name
-                ]);
+
+            $user = auth()->user();
+            $user->update([
+                'name' => $r->name ?? $user->name,
+                'phone' => $r->phone ?? $user->phone,
+            ]);
             return $this->success('Profile updated successfully');
         } catch (\Throwable $e) {
-            return $this->error('Please check your fields');
+            return $this->error($e->getMessage());
         }
     }
     //login 
@@ -141,8 +141,8 @@ class UserController extends Controller
             $v = Validator::make(
                 $r->input(),
                 [
-                    'phone' => 'required',
-                    'password' => 'required',
+                    'phone' => 'required|numeric',
+                    'password' => 'required|min:4|max:20',
                 ]
             );
             if ($v->fails()) {
@@ -179,7 +179,7 @@ class UserController extends Controller
         $v = Validator::make(
             $r->input(),
             [
-                'phone' => 'required',
+                'phone' => 'required|numeric',
             ]
         );
         if ($v->fails()) {
@@ -224,39 +224,38 @@ class UserController extends Controller
         }
     }
 
-     //verifyOtp  
-     public function verifyOtp(request $r)
-     {
-         $v = Validator::make(
-             $r->input(),
-             [
-                 'phone' => 'required',
-                 'otp' => 'required'
- 
-             ]
-         );
-         if ($v->fails()) {
-             return $this->validation($v);
-         }
-         try {
- 
-             $user = User::where('phone', $r->phone)->first();
-             if (empty($user)) {
-                 throw new Exception("This number is not registered yet");
-             }
- 
-             $otp = Otp::where(['phone' => $r->phone, 'otp' => $r->otp])
-                 ->first();
-             if (empty($otp)) {
-                 throw new Exception("No otp found");
-             }
-             $otp->delete();
-             return $this->success("OTP verified successfully");
+    //verifyOtp  
+    public function verifyOtp(request $r)
+    {
+        $v = Validator::make(
+            $r->input(),
+            [
+                'phone' => 'required|numeric',
+                'otp' => 'required'
 
-         } catch (\Throwable $e) {
-             return $this->error($e->getMessage());
-         }
-     }
+            ]
+        );
+        if ($v->fails()) {
+            return $this->validation($v);
+        }
+        try {
+
+            $user = User::where('phone', $r->phone)->first();
+            if (empty($user)) {
+                throw new Exception("This number is not registered yet");
+            }
+
+            $otp = Otp::where(['phone' => $r->phone, 'otp' => $r->otp])
+                ->first();
+            if (empty($otp)) {
+                throw new Exception("No otp found");
+            }
+            $otp->delete();
+            return $this->success("OTP verified successfully");
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+    }
 
 
 
@@ -266,7 +265,7 @@ class UserController extends Controller
         $v = Validator::make(
             $r->input(),
             [
-                'phone' => 'required',
+                'phone' => 'required|numeric',
                 'otp' => 'required'
 
             ]
@@ -305,7 +304,7 @@ class UserController extends Controller
         $v = Validator::make(
             $r->input(),
             [
-                'password' => 'required',
+                'password' => 'required|min:4|max:20'
             ]
         );
         if ($v->fails()) {
@@ -318,4 +317,70 @@ class UserController extends Controller
             return $this->error($e->getMessage());
         }
     }
+
+    // add-driver
+    public function addDriver(request $r)
+    {
+        $v = Validator::make(
+            $r->input(),
+            [
+                'name' => 'required|string|max:15',
+                'phone' => 'required|numeric',
+                'password' => 'required|min:4|max:20',
+                'color_code' => 'required|string|max:15',
+                'have_app' => 'required|numeric|max:1',
+
+            ]
+        );
+        if ($v->fails()) {
+            return $this->validation($v);
+        }
+        try {
+            User::create(
+                [
+                    'name' => $r->name,
+                    'phone' => $r->phone,
+                    'color_code' => $r->color_code,
+                    'password' => Hash::make($r->password),
+                    'created_by_id' => auth()->user()->id
+                ]
+            );
+
+            return $this->success('Driver added successfully');
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+    }
+
+
+    //update driver profile 
+    public function updateDriverProfile(request $r)
+    {
+        try {
+            $v = Validator::make(
+                $r->input(),
+                [
+                    'driver_id' => 'required|numeric',
+                ]
+            );
+            if ($v->fails()) {
+                return $this->validation($v);
+            }
+
+            $user = User::where('id',$r->driver_id)->first();
+            if(empty($user)){
+                throw new Exception("No driver found");
+            }
+            $user->update([
+                'name' => $r->name ?? $user->name,
+                'phone' => $r->phone ?? $user->phone,
+                'color_code' => $r->color_code ?? $user->color_code,
+            ]);
+            return $this->success('Driver Profile updated successfully');
+        } catch (\Throwable $e) {
+            return $this->error($e->getMessage());
+        }
+    }
+
+
 }

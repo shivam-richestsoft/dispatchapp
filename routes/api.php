@@ -21,129 +21,132 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 
-Route::post('register',[UserController::class, 'register']);
-Route::post('login',[UserController::class, 'login']);
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
 
-Route::post('send-otp',[UserController::class, 'sendOtp']);
-Route::post('forgot-password',[UserController::class, 'forgotPassword']);
+Route::post('send-otp', [UserController::class, 'sendOtp']);
+Route::post('forgot-password', [UserController::class, 'forgotPassword']);
 
-Route::post('verify-otp',[UserController::class, 'verifyOtp']);
+Route::post('verify-otp', [UserController::class, 'verifyOtp']);
 
 
 //to show error when user not logged in --- used in middleware(Authenticate)
-Route::get('login-check',[UserController::class, 'loginCheck'])->name('login');
+Route::get('login-check', [UserController::class, 'loginCheck'])->name('login');
 
-Route::middleware('auth:sanctum')->group( function () {
-    Route::post('change-password',[UserController::class, 'changePassword']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('change-password', [UserController::class, 'changePassword']);
 
-//invite    
-// Route::post('invite',[UC::class, 'invite']);
+    Route::post('add-driver', [UserController::class, 'addDriver']);
 
-// //general
- Route::get('get-profile',[UserController::class, 'getProfile']);
-// Route::post('update-profile',[UC::class, 'updateProfile']);
-// Route::post('additional-info',[UC::class, 'additionalInfo']);
+    //general
+    Route::get('get-profile', [UserController::class, 'getProfile']);
+    Route::post('update-profile', [UserController::class, 'updateProfile']);
 
-// //lists
-// Route::get('language-list',[UC::class, 'languageList']);
-// Route::get('skills-list',[UC::class, 'skillsList']);
-// Route::get('expertise-list',[UC::class, 'expertiseList']);
+    Route::post('update-driver-profile', [UserController::class, 'updateDriverProfile']);
 
-// //Adding project for business
-// Route::post('add-projects',[UC::class, 'addProjects']);
-// Route::post('update-project',[UC::class, 'updateProject']);
-// Route::post('delete-project',[UC::class, 'deleteProject']);
-// Route::get('projects-list',[UC::class, 'projectsListing']);
 
-// //Adding employment for indvidual
-// Route::post('add-employment',[UC::class, 'addEmployment']);
-// Route::post('update-employment',[UC::class, 'updateEmployment']);
-// Route::post('delete-employment',[UC::class, 'deleteEmployment']);
-// Route::get('employment-list',[UC::class, 'employmentsListing']);
+    // Route::post('additional-info',[UC::class, 'additionalInfo']);
 
-// //social media
-// Route::post('add-social',[UC::class, 'addSocial']);
-// Route::get('get-social',[UC::class, 'getSocial']);
+    // //lists
+    // Route::get('language-list',[UC::class, 'languageList']);
+    // Route::get('skills-list',[UC::class, 'skillsList']);
+    // Route::get('expertise-list',[UC::class, 'expertiseList']);
 
-// // logout current device
-// Route::get('logout',[UC::class, 'logout']);
+    // //Adding project for business
+    // Route::post('add-projects',[UC::class, 'addProjects']);
+    // Route::post('update-project',[UC::class, 'updateProject']);
+    // Route::post('delete-project',[UC::class, 'deleteProject']);
+    // Route::get('projects-list',[UC::class, 'projectsListing']);
 
-// //logout all devices
-// Route::get('logout-all',[UC::class, 'logoutAll']);
+    // //Adding employment for indvidual
+    // Route::post('add-employment',[UC::class, 'addEmployment']);
+    // Route::post('update-employment',[UC::class, 'updateEmployment']);
+    // Route::post('delete-employment',[UC::class, 'deleteEmployment']);
+    // Route::get('employment-list',[UC::class, 'employmentsListing']);
 
-// //search
-// Route::post('search-user',[UC::class, 'searchUser']);
+    // //social media
+    // Route::post('add-social',[UC::class, 'addSocial']);
+    // Route::get('get-social',[UC::class, 'getSocial']);
 
-// //friend request
-// Route::post('send-request',[UC::class, 'sendRequest']);
-// Route::post('delete-request',[UC::class, 'deleteRequest']);
-// Route::get('pending-request',[UC::class, 'pendingRequest']);
-// Route::get('sent-request',[UC::class, 'sentRequest']);
-// Route::post('accept-request',[UC::class, 'acceptRequest']);
-// Route::post('cancel-request',[UC::class, 'cancelRequest']);
-// Route::post('unfriend',[UC::class, 'unfriend']);
+    // // logout current device
+    // Route::get('logout',[UC::class, 'logout']);
 
-// //get additiona details i.e emploment history or prjoject history and social links
-// Route::post('get-additional-details',[UC::class, 'getAdditionalDetails']);
+    // //logout all devices
+    // Route::get('logout-all',[UC::class, 'logoutAll']);
 
-// //notifications
-// Route::get('notifications',[UC::class, 'notifications']);
+    // //search
+    // Route::post('search-user',[UC::class, 'searchUser']);
 
-// //post
-// Route::post('post-something',[UC::class, 'postSomething']);
+    // //friend request
+    // Route::post('send-request',[UC::class, 'sendRequest']);
+    // Route::post('delete-request',[UC::class, 'deleteRequest']);
+    // Route::get('pending-request',[UC::class, 'pendingRequest']);
+    // Route::get('sent-request',[UC::class, 'sentRequest']);
+    // Route::post('accept-request',[UC::class, 'acceptRequest']);
+    // Route::post('cancel-request',[UC::class, 'cancelRequest']);
+    // Route::post('unfriend',[UC::class, 'unfriend']);
 
-// //post
-// Route::get('friends-list',[UC::class, 'friendsList']);
+    // //get additiona details i.e emploment history or prjoject history and social links
+    // Route::post('get-additional-details',[UC::class, 'getAdditionalDetails']);
 
-// //timeline
-// Route::get('timeline',[UC::class, 'timeline']);
+    // //notifications
+    // Route::get('notifications',[UC::class, 'notifications']);
 
-// //Get Post 
-// Route::get('getpost',[UC::class,'getpost']);
-// Route::post('getfile',[UC::class,'GetFile']);
-// //Notification Onscreen 
-// Route::get('onScreenNotification',[UC::class,'onScreenNotification']);
+    // //post
+    // Route::post('post-something',[UC::class, 'postSomething']);
 
-// //Read Notification
-// Route::post('readnotificaton',[UC::class,'readnotificaton']);
+    // //post
+    // Route::get('friends-list',[UC::class, 'friendsList']);
 
-// //Like and Dislike
-// Route::post('likedislike',[UC::class,'LikeAndDislike']);
-// Route::post('singlelikedislike',[UC::class,'FilesLikeAndDislike']);
+    // //timeline
+    // Route::get('timeline',[UC::class, 'timeline']);
 
-// //Thumbs Up AND Thumbs Down
-// Route::post('thumbsupdown',[UC::class,'ThumbsUpandDown']);
-// Route::post('singlethumbsupdown',[UC::class,'FilesThumbsUpandDown']);
+    // //Get Post 
+    // Route::get('getpost',[UC::class,'getpost']);
+    // Route::post('getfile',[UC::class,'GetFile']);
+    // //Notification Onscreen 
+    // Route::get('onScreenNotification',[UC::class,'onScreenNotification']);
 
-// //Reaction Listing
-// Route::post('likelisting',[UC::class,'LikeListing']);
-// Route::post('singlelikelisting',[UC::class,'SingleLikeListing']);
+    // //Read Notification
+    // Route::post('readnotificaton',[UC::class,'readnotificaton']);
 
-// //Reaction
-// Route::post('postreaction',[UC::class,'PostReact']);
-// Route::post('singlepostreaction',[UC::class,'FileReact']);
+    // //Like and Dislike
+    // Route::post('likedislike',[UC::class,'LikeAndDislike']);
+    // Route::post('singlelikedislike',[UC::class,'FilesLikeAndDislike']);
 
-// //Reaction Listing
-// Route::post('reactionlisting',[UC::class,'ReactionListing']);
-// Route::post('singlereactionlisting',[UC::class,'SingleReactionListing']);
+    // //Thumbs Up AND Thumbs Down
+    // Route::post('thumbsupdown',[UC::class,'ThumbsUpandDown']);
+    // Route::post('singlethumbsupdown',[UC::class,'FilesThumbsUpandDown']);
 
-// //Comments
-// Route::post('postcomment',[UC::class,'PostComment']);
-// Route::post('postcommentreply',[UC::class,'PostCommentReply']);
+    // //Reaction Listing
+    // Route::post('likelisting',[UC::class,'LikeListing']);
+    // Route::post('singlelikelisting',[UC::class,'SingleLikeListing']);
 
-// //Comments Listing
-// Route::post('postcommentlisting',[UC::class,'PostCommentListing']);
-// Route::post('postcommentreplylisting',[UC::class,'PostCommentReplyListing']);
+    // //Reaction
+    // Route::post('postreaction',[UC::class,'PostReact']);
+    // Route::post('singlepostreaction',[UC::class,'FileReact']);
 
-// //File Comments
-// Route::post('filecomment',[UC::class,'FileComment']);
-// Route::post('filecommentlisting',[UC::class,'FileCommentListing']);
+    // //Reaction Listing
+    // Route::post('reactionlisting',[UC::class,'ReactionListing']);
+    // Route::post('singlereactionlisting',[UC::class,'SingleReactionListing']);
 
-// //File Comments Reply
-// Route::post('filecommentreply',[UC::class,'FileCommentReply']);
-// Route::post('filecommentreplylisting',[UC::class,'FileCommentReplyListing']);
+    // //Comments
+    // Route::post('postcomment',[UC::class,'PostComment']);
+    // Route::post('postcommentreply',[UC::class,'PostCommentReply']);
 
-// //Post View Count Increment
-// Route::post('postviewed',[UC::class,'PostViewCount']);
-// Route::post('fileviewed',[UC::class,'FileViewCount']);
+    // //Comments Listing
+    // Route::post('postcommentlisting',[UC::class,'PostCommentListing']);
+    // Route::post('postcommentreplylisting',[UC::class,'PostCommentReplyListing']);
+
+    // //File Comments
+    // Route::post('filecomment',[UC::class,'FileComment']);
+    // Route::post('filecommentlisting',[UC::class,'FileCommentListing']);
+
+    // //File Comments Reply
+    // Route::post('filecommentreply',[UC::class,'FileCommentReply']);
+    // Route::post('filecommentreplylisting',[UC::class,'FileCommentReplyListing']);
+
+    // //Post View Count Increment
+    // Route::post('postviewed',[UC::class,'PostViewCount']);
+    // Route::post('fileviewed',[UC::class,'FileViewCount']);
 });

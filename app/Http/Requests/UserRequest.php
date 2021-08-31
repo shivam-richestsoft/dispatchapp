@@ -34,7 +34,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'email' => 'required|email|unique:users|max:255',
+            'email' => 'email|unique:users|max:255',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:5|max:15|unique:users',
         ];
     }

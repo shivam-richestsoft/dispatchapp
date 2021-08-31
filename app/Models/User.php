@@ -12,16 +12,16 @@ use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens,HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
-    const ROLE_ADMIN=0;
-    const ROLE_STAFF=1;
-    const ROLE_AGENCY=2;
-    const ROLE_STREAMER=3;
-    const ROLE_USER=4;
+    const ROLE_ADMIN = 0;
+    const ROLE_STAFF = 1;
+    const ROLE_AGENCY = 2;
+    const ROLE_STREAMER = 3;
+    const ROLE_USER = 4;
 
-    const MALE=1;
-    const FEMALE=2;
+    const MALE = 1;
+    const FEMALE = 2;
     const UPLOAD_PICTURE_PATH = "/public/images";
 
     /**
@@ -33,6 +33,11 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'created_by_id',
+        'color_code',
+        'have_app',
+        'phone'
+
     ];
 
     /**
@@ -55,14 +60,17 @@ class User extends Authenticatable
     ];
 
 
-    public function jsonData(){
-        $json=[];
-        $json['id']=$this->id;
-        $json['name']=$this->name;
-        $json['email']=$this->email;
-        $json['phone']=$this->phone;
-        $json['is_notification']=$this->is_notification;
-        return $json;
+    public function jsonData()
+    {
+        $json = [];
+        $json['id'] = $this->id;
+        $json['name'] = $this->name;
+        $json['email'] = $this->email;
+        $json['phone'] = $this->phone;
+        $json['is_notification'] = $this->is_notification;
+        $json['color_code'] = $this->color_code;
+        $json['have_app'] = $this->have_app;
 
+        return $json;
     }
 }
