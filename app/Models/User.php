@@ -38,7 +38,8 @@ class User extends Authenticatable
         'created_by_id',
         'color_code',
         'have_app',
-        'phone'
+        'phone',
+        'role_id'
 
     ];
 
