@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
-
+use App\Http\Controllers\Api\EventController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('update-driver-profile', [UserController::class, 'updateDriverProfile']);
 
     Route::get('driver-list', [UserController::class, 'driverList']);
+
+    Route::post('assign-event', [EventController::class, 'assignEvent']);
+
 
 
 
