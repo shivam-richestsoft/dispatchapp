@@ -48,6 +48,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('assign-event', [EventController::class, 'assignEvent']);
 
+    Route::post('get-events', [EventController::class, 'getEvents']);
+
+    Route::post('get-driver-events', [EventController::class, 'getDriverEvents']);
+
+
+
 
 
 

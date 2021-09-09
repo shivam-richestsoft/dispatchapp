@@ -231,7 +231,7 @@ class UserController extends Controller
             $r->input(),
             [
                 'phone' => 'required|numeric',
-                'otp' => 'required'
+                'otp' => 'required|numeric'
 
             ]
         );

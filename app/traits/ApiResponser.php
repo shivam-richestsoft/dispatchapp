@@ -46,6 +46,10 @@ trait ApiResponser
         $response = ["status" =>  $status, "success" => $success, "message" => $message,'data'=>$data ,'total'=>$count];
         return response()->json($response, $status, $headers = [], $options = JSON_PRETTY_PRINT);
 	}
+    /*
+    *
+    *jsonData must in model 
+    */
 	public function customPaginator($paginator,$options=[]){
         
         $list=[];

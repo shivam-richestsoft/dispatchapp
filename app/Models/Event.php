@@ -29,4 +29,20 @@ class Event extends Model
         'created_by_id',
 
     ];
+
+    public function getAssignedEvent()
+    {
+        return $this->belongsTo(AssignedEvent::class, 'id', 'event_id');
+    }
+
+    public function jsonData()
+    {
+        $json = [];
+        $json['id'] = $this->id;
+        $json['title'] = $this->title;
+        $json['event_timestamp'] = $this->event_timestamp;
+        $json['assigned_to'] = $this->getAssignedEvent->getAssignedTo->jsonData()??(object)[];
+
+        return $json;
+    }
 }

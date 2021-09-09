@@ -12,4 +12,22 @@ class AssignedEvent extends Model
     protected $table = 'assigned_events';
 
     const STATUS_ASSIGNED = 1;
+
+
+    public function getAssignedTo()
+    {
+        return $this->belongsTo(User::class, 'assigned_to', 'id');
+    }
+
+
+    // public function jsonData()
+    // {
+    //     $json = [];
+    //     $json['user_id'] = $this->assigned_to;
+    //     $json['title'] = $this->title;
+    //     $json['event_timestamp'] = $this->event_timestamp;
+    //     $json['assigned_to'] = $this->getAssignedEvent;
+
+    //     return $json;
+    // }
 }
