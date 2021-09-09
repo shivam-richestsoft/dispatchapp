@@ -136,6 +136,7 @@ class EventController extends Controller
             $r->input(),
             [
                 'event_type' => 'required', //assigned or unassigned 
+                'event_type' => 'required', //assigned or unassigned
             ]
         );
         if ($v->fails()) {
